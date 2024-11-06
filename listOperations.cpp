@@ -43,8 +43,8 @@ RETURN_VALUES listAddElement (LIST *list, int value, int line, const char* funct
 
     list->prev[currentElement] = previousElement;
 
-    makeDotFile (list, previousElement, currentElement, "green");
-    system ("dot dot.dot -Tpng -o gr.png");
+    //makeDotFile (list, previousElement, currentElement, "green");
+    //system ("dot dot.dot -Tpng -o gr.png");
 
     return CORRECT;
 }

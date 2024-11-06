@@ -12,7 +12,7 @@ int main ()
     listCtor (&list, LIST_SIZE);
 
     listDump (logFile, &list);
-    listAddElement (&list, 20, VALUES_FOR_ERROR);
+    listAddElement (&list, 990, VALUES_FOR_ERROR);
     listDump (logFile, &list);
     listAddElement (&list, 30, VALUES_FOR_ERROR);
     listDump (logFile, &list);

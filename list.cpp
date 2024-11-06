@@ -10,7 +10,7 @@ RETURN_VALUES listCtor (LIST *list, int size)
         return ERROR;
     }
 
-    list->data = (int*)calloc (size, sizeof(int));
+    list->data = (int*)calloc ((size_t)size, sizeof(int));
     if (list->data == NULL)
     {
         return ERROR;
@@ -21,7 +21,7 @@ RETURN_VALUES listCtor (LIST *list, int size)
         list->data[i] = POISON;
     }
 
-    list->next = (int*)calloc (size, sizeof(int));
+    list->next = (int*)calloc ((size_t)size, sizeof(int));
     if (list->next == NULL)
     {
         return ERROR;
@@ -37,7 +37,7 @@ RETURN_VALUES listCtor (LIST *list, int size)
         }
     }
 
-    list->prev = (int*)calloc (size, sizeof(int));
+    list->prev = (int*)calloc ((size_t)size, sizeof(int));
     if (list->prev == NULL)
     {
         return ERROR;

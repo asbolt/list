@@ -43,6 +43,9 @@ RETURN_VALUES listAddElement (LIST *list, int value, int line, const char* funct
 
     list->prev[currentElement] = previousElement;
 
+    makeDotFile (list, previousElement, currentElement, "green");
+    system ("dot dot.dot -Tpng -o gr.png");
+
     return CORRECT;
 }
 
@@ -120,4 +123,39 @@ int listSearchElement (LIST *list, int value, int line, const char* function, co
 
     printf ("This element doesn't exist");
     return EMPTY_ELEMENT;
+}
+
+RETURN_VALUES makeDotFile (LIST *list, int anchor, int prev, const char *color)
+{
+    FILE * dotFile = fopen ("dot.dot", "w");
+        if (dotFile == NULL)
+        {
+            return ERROR;
+        }
+
+    fprintf (dotFile, "digraph G{\nrankdir=LR;\nlist[shape=record,label=\" number | value | next | prev\"];\n");
+
+    for (int i = 0; i < LIST_SIZE; i++)
+    {
+        fprintf (dotFile, "%d [shape=record,label=\" %d | %d | %d | %d\" ];\n", i, i, list->data[i], list->next[i], list->prev[i]);
+    }
+
+    fprintf (dotFile, "list -> 0[color=white];\n");
+
+    for (int i = 0; i < LIST_SIZE - 1; i++)
+    {
+        fprintf (dotFile, "%d -> ", i);
+    }
+    fprintf (dotFile, "%d;\n", LIST_SIZE - 1);
+
+    fprintf (dotFile, "%d -> %d [color=\"%s\"];\n", prev, anchor, color);
+
+    fprintf (dotFile, "tail -> %d;\n", list->prev[0]);
+    fprintf (dotFile, "head -> %d;\n", list->next[0]);
+
+    fprintf (dotFile, "}");
+
+    fclose (dotFile);
+
+    return CORRECT;
 }

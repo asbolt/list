@@ -74,25 +74,25 @@ RETURN_VALUES listDtor (LIST *list, int line, const char* function, const char* 
     return CORRECT; 
 }
 
-void listDump (LIST *list)
+void listDump (FILE *logFile, LIST *list)
 {
-    printf ("\n\n\n");
+    fprintf (logFile, "\n\n\n");
 
-    printf ("Number:");
+    fprintf (logFile, "Number:");
     for (int i = 0; i < LIST_SIZE; i++)
     {
-        printf ("%4d ", i);
+        fprintf (logFile, "%4d ", i);
     }
-    printf ("\n");
+    fprintf (logFile, "\n");
 
-    print (list->data, "Data: ");
-    print (list->next, "Next: ");
-    print (list->prev, "Prev: ");
+    print (logFile, list->data, "Data: ");
+    print (logFile, list->next, "Next: ");
+    print (logFile, list->prev, "Prev: ");
 
-    printf ("Size: %d\n", LIST_SIZE);
-    printf ("Free: %d\n", list->free);
+    fprintf (logFile, "Size: %d\n", LIST_SIZE);
+    fprintf (logFile, "Free: %d\n", list->free);
 
-    printf ("\n\n\n");
+    fprintf (logFile, "\n\n\n");
 }
 
 LIST_ERRORS listCheckForError (LIST *list)
@@ -127,16 +127,16 @@ LIST_ERRORS listCheckForError (LIST *list)
     return LIST_CORRECT;
 }
 
-void print (int *array, const char *name)
+void print (FILE *logFile, int *array, const char *name)
 {
-    printf ("%s ", name);
+    fprintf (logFile, "%s ", name);
 
     for (int i = 0; i < LIST_SIZE; i++)
     {
-        printf ("%4d ", array[i]);
+        fprintf (logFile, "%4d ", array[i]);
     }
 
-    printf ("\n");
+    fprintf (logFile, "\n");
 }
 
 LIST_ERRORS listPrintError (LIST *list, int line, const char* function, const char* file)

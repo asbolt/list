@@ -48,8 +48,8 @@ struct LIST
 
 RETURN_VALUES listCtor (LIST *list, int size);
 RETURN_VALUES listDtor (LIST *list, int line, const char* function, const char* file);
-void listDump (LIST *list);
-void print (int *array, const char *name);
+void listDump (FILE *logFile, LIST *list);
+void print (FILE *logFile, int *array, const char *name);
 LIST_ERRORS listCheckForError (LIST *list);
 LIST_ERRORS listPrintError (LIST *list, int line, const char* function, const char* file);
 

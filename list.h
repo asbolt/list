@@ -19,6 +19,7 @@
 const int EMPTY_ELEMENT = -1;
 const int POISON        = -30;
 const int LIST_SIZE     = 10;
+const int EMPTY_LIST    = 1;
 
 enum RETURN_VALUES
 {
@@ -52,6 +53,7 @@ void listDump (FILE *logFile, LIST *list);
 void print (FILE *logFile, int *array, const char *name);
 LIST_ERRORS listCheckForError (LIST *list);
 LIST_ERRORS listPrintError (LIST *list, int line, const char* function, const char* file);
+RETURN_VALUES makeDotFile (LIST *list);
 
 #endif
 

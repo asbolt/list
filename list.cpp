@@ -4,7 +4,7 @@ RETURN_VALUES listCtor (LIST *list, int size)
 {
     assert (list);
 
-    if (list->free != 1)
+    if (list->free != EMPTY_LIST)
     {
         printf ("This list is not empty\n");
         return ERROR;
@@ -16,9 +16,9 @@ RETURN_VALUES listCtor (LIST *list, int size)
         return ERROR;
     }
 
-    for (int i = 0; i < LIST_SIZE; i++)
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        list->data[i] = POISON;
+        list->data[numberElement]  = POISON;
     }
 
     list->next = (int*)calloc ((size_t)size, sizeof(int));
@@ -27,13 +27,13 @@ RETURN_VALUES listCtor (LIST *list, int size)
         return ERROR;
     }
 
-    for (int i = 0; i < LIST_SIZE; i++)
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        if (i == 0 || i == LIST_SIZE - 1)
+        if (numberElement == 0 || numberElement == LIST_SIZE - 1)
         {
-            list->next[i] = 0;
+            list->next[numberElement]  = 0;
         } else {
-            list->next[i] = i + 1;
+            list->next[numberElement]  = numberElement + 1;
         }
     }
 
@@ -43,13 +43,13 @@ RETURN_VALUES listCtor (LIST *list, int size)
         return ERROR;
     }
 
-    for (int i = 0; i < LIST_SIZE; i++)
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        if (i == 0)
+        if (numberElement == 0)
         {
-            list->prev[i] = 1;
+            list->prev[numberElement]  = 1;
         } else {
-            list->prev[i] = EMPTY_ELEMENT;
+            list->prev[numberElement]  = EMPTY_ELEMENT;
         }
     }
 
@@ -79,9 +79,9 @@ void listDump (FILE *logFile, LIST *list)
     fprintf (logFile, "\n\n\n");
 
     fprintf (logFile, "Number:");
-    for (int i = 0; i < LIST_SIZE; i++)
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        fprintf (logFile, "%4d ", i);
+        fprintf (logFile, "%4d ", numberElement);
     }
     fprintf (logFile, "\n");
 
@@ -131,9 +131,9 @@ void print (FILE *logFile, int *array, const char *name)
 {
     fprintf (logFile, "%s ", name);
 
-    for (int i = 0; i < LIST_SIZE; i++)
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        fprintf (logFile, "%4d ", array[i]);
+        fprintf (logFile, "%4d ", array[numberElement]);
     }
 
     fprintf (logFile, "\n");
@@ -171,4 +171,48 @@ LIST_ERRORS listPrintError (LIST *list, int line, const char* function, const ch
     printf ("Error in file %s:%d (function %s)\n", file, line, function);
 
     return list->listState;
+}
+
+RETURN_VALUES makeDotFile (LIST *list)
+{
+    FILE * dotFile = fopen ("dot.dot", "w");
+        if (dotFile == NULL)
+        {
+            return ERROR;
+        }
+
+    fprintf (dotFile, "digraph G{\nsplines=ortho;\nrankdir=LR;\nlist[shape=record,label=\" number | value | next | prev\"];\n");
+
+    for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
+    {
+        if (list->data[numberElement]  != POISON || numberElement == 0)
+        {
+            if (numberElement == 0)
+            {
+                fprintf (dotFile, "%d [shape=record,label=\" NULL | %d | %d | %d\", fontcolor = red];\n", numberElement, list->data[numberElement], list->next[numberElement], list->prev[numberElement]);
+            } else {
+                fprintf (dotFile, "%d [shape=record,label=\" %d | %d | %d | %d\" ];\n", numberElement, numberElement, list->data[numberElement], list->next[numberElement], list->prev[numberElement]);
+            }
+        }
+    }
+
+    fprintf (dotFile, "list -> 0[color=white];\n");
+
+    fprintf (dotFile, "0 -> ");
+    int ind = 0;
+    for (int numberElement = list->prev[0]; numberElement != 0 && list->data[list->next[numberElement]] != POISON; numberElement = list->next[numberElement])
+    {
+        fprintf (dotFile, "%d -> ", numberElement);
+        ind = numberElement;
+    }
+    fprintf (dotFile, "%d[weight = 1000];\n", list->next[ind]);
+
+    fprintf (dotFile, "tail -> %d;\n", list->next[0]);
+    fprintf (dotFile, "head -> %d;\n", list->prev[0]);
+
+    fprintf (dotFile, "}");
+
+    fclose (dotFile);
+
+    return CORRECT;
 }

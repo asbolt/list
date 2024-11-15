@@ -185,15 +185,16 @@ RETURN_VALUES makeDotFile (LIST *list)
 
     for (int numberElement = 0; numberElement < LIST_SIZE; numberElement++ )
     {
-        if (list->data[numberElement]  != POISON || numberElement == 0)
-        {
+        //if (list->data[numberElement]  != POISON || numberElement == 0)
+        //{
             if (numberElement == 0)
             {
                 fprintf (dotFile, "%d [shape=record,label=\" NULL | %d | %d | %d\", fontcolor = red];\n", numberElement, list->data[numberElement], list->next[numberElement], list->prev[numberElement]);
             } else {
+                //printf ("%d\n", numberElement);
                 fprintf (dotFile, "%d [shape=record,label=\" %d | %d | %d | %d\" ];\n", numberElement, numberElement, list->data[numberElement], list->next[numberElement], list->prev[numberElement]);
             }
-        }
+        //}
     }
 
     fprintf (dotFile, "list -> 0[color=white];\n");
@@ -207,12 +208,22 @@ RETURN_VALUES makeDotFile (LIST *list)
     }
     fprintf (dotFile, "%d[weight = 1000];\n", list->next[ind]);
 
+    fprintf (dotFile, "%d -> ", list->next[0]);
+    for (int numberElement = list->free; list->next[numberElement] != 0; numberElement = list->next[numberElement])
+    {
+        fprintf (dotFile, "%d -> ", numberElement);
+        ind = numberElement;
+    }
+    fprintf (dotFile, "%d[color=white, weight = 1000];\n", list->next[ind]);
+
     fprintf (dotFile, "tail -> %d;\n", list->next[0]);
     fprintf (dotFile, "head -> %d;\n", list->prev[0]);
 
     fprintf (dotFile, "}");
 
     fclose (dotFile);
+
+    system ("dot dot.dot -Tpng -o gr.png");
 
     return CORRECT;
 }
